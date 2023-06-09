@@ -27,11 +27,13 @@ headers = {
 totalCount = 0
 pageCount = 22
 index1 = 1
+totalList = []
 for index1 in range(pageCount):
-
     response = requests.get(f'https://api.github.com/search/code?q=language:rpgle&page={index1}',headers=headers)
     #response.raise_for_status()
     print(response.status_code)
+    if response.status_code != 200:
+        print(response['message']) 
 
     if response.status_code == 200:
         json_data = response.json()
@@ -40,16 +42,19 @@ for index1 in range(pageCount):
         json_items = json_data['items']
         print(json_data['total_count'])
         index = 0
-        totalList = []
         for index in range(29):
             totalCount+=1
             print(str(totalCount) + ' -> ' + str(index))
             tempJsonItem = json_items[index]
             tempList = [tempJsonItem['name'], tempJsonItem['html_url'], tempJsonItem['url'],
-                        (tempJsonItem['repository'])['name'], (tempJsonItem['repository'])['description']
+                        (tempJsonItem['repository'])['name'], (tempJsonItem['repository'])['description'],
+                        totalCount, pageCount, index
                         ]
             print((tempJsonItem['name']))
             totalList.append(tempList)
-        df = pd.DataFrame(totalList, columns=['NAME', 'HTML-URL', 'URL', 'REPO-NAME',
-                                              'REPO-DESCRIPTION'])
-        df.to_csv('file_name.csv')
+
+
+df = pd.DataFrame(totalList, columns=['NAME', 'HTML-URL', 'REPO-URL', 'REPO-NAME',
+                                      'REPO-DESCRIPTION', 'ENTRY-NUMBER', 'PAGE-NUMBER',
+                                      'RELATIVE-ENTRY-NUMBER'])
+df.to_csv('file_name.csv')
