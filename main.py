@@ -1,11 +1,55 @@
 import requests
+import os
+from dotenv import load_dotenv
+import json
+import pandas as pd
 
-url = 'https://api.github.com'
-headers = {'Authorization': 'Bearer AUTH_TOKEN'}
-response = requests.get(url, headers=headers)
-print(response.status_code)
+load_dotenv()
+AUTH_TOKEN = os.getenv("AUTH_TOKEN")
 
-if response.status_code == 200:
-    json_data = response.json()
-    print(json_data['organizational_url'])
+base_url = 'https://api.github.com/search/code'
+search_query = 'language:python'
+sort_by = 'stars'
+request_url = f'{base_url}?q={search_query}&sort={sort_by}'
+query = 'language: rpgle'
+params = {
+    'q': query,
+    'sort': 'stars'
+}
 
+headers = {
+    'Accept': 'application/vnd.github.text-match+json',
+    'Authorization': f'token '+AUTH_TOKEN,
+    'X-GitHub-Api-Version': '2022-11-28'
+    }
+
+#response = requests.get(request_url, params=params, headers=headers)
+totalCount = 0
+pageCount = 22
+index1 = 1
+for index1 in range(pageCount):
+
+    response = requests.get(f'https://api.github.com/search/code?q=language:rpgle&page={index1}',headers=headers)
+    #response.raise_for_status()
+    print(response.status_code)
+
+    if response.status_code == 200:
+        json_data = response.json()
+        #print(json_data['organizational_url'])
+        #print(json_data['items'])
+        json_items = json_data['items']
+        print(json_data['total_count'])
+        index = 0
+        totalList = []
+        for index in range(29):
+            totalCount+=1
+            print(str(totalCount) + ' -> ' + str(index))
+            tempJsonItem = json_items[index]
+            tempList = [tempJsonItem['name'], tempJsonItem['html_url'], tempJsonItem['url'],
+                        (tempJsonItem['repository'])['name'], (tempJsonItem['repository'])['description']
+                        ]
+            print((tempJsonItem['name']))
+            totalList.append(tempList)
+        df = pd.DataFrame(totalList, columns=['NAME', 'HTML-URL', 'URL', 'REPO-NAME',
+                                              'REPO-DESCRIPTION'])
+        df.to_csv('file_name.csv')
