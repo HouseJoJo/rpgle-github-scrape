@@ -28,12 +28,18 @@ totalCount = 0
 pageCount = 22
 index1 = 1
 totalList = []
+
 for index1 in range(pageCount):
-    response = requests.get(f'https://api.github.com/search/code?q=language:rpgle&page={index1}',headers=headers)
+    link = f'https://api.github.com/search/code?q=language:rpgle&page='+str(index1)
+    print(link)
+    response = requests.get(link,headers=headers)
     #response.raise_for_status()
     print(response.status_code)
+    print('PAGENUMBER =>' + str(index1))
     if response.status_code != 200:
-        print(response['message']) 
+        json_data = response.json()
+        print(json_data)
+        break 
 
     if response.status_code == 200:
         json_data = response.json()
@@ -48,7 +54,7 @@ for index1 in range(pageCount):
             tempJsonItem = json_items[index]
             tempList = [tempJsonItem['name'], tempJsonItem['html_url'], tempJsonItem['url'],
                         (tempJsonItem['repository'])['name'], (tempJsonItem['repository'])['description'],
-                        totalCount, pageCount, index
+                        totalCount, index1, index
                         ]
             print((tempJsonItem['name']))
             totalList.append(tempList)
@@ -57,4 +63,4 @@ for index1 in range(pageCount):
 df = pd.DataFrame(totalList, columns=['NAME', 'HTML-URL', 'REPO-URL', 'REPO-NAME',
                                       'REPO-DESCRIPTION', 'ENTRY-NUMBER', 'PAGE-NUMBER',
                                       'RELATIVE-ENTRY-NUMBER'])
-df.to_csv('file_name.csv')
+df.to_csv('data.csv')
