@@ -8,7 +8,8 @@ def prepareUrl(url):
     out = out.replace('/blob', '')
     return out
 
-df['raw'] = df['HTML-URL'].apply(prepareUrl)
+df['RAW'] = df['HTML-URL'].apply(prepareUrl)
 
-print(df['raw'])
+print(df['RAW'])
 df.to_csv('processedURL-concat.csv')
+
