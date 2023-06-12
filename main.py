@@ -1,7 +1,6 @@
 import requests
 import os
 from dotenv import load_dotenv
-import json
 import pandas as pd
 
 load_dotenv()
@@ -25,15 +24,14 @@ headers = {
 
 #response = requests.get(request_url, params=params, headers=headers)
 totalCount = 0
-pageCount = 22
-index1 = 1
+pageCount = 50
+index1 = 36
 totalList = []
 
-for index1 in range(pageCount):
+for index1 in range(index1, pageCount):
     link = f'https://api.github.com/search/code?q=language:rpgle&page='+str(index1)
     print(link)
     response = requests.get(link,headers=headers)
-    #response.raise_for_status()
     print(response.status_code)
     print('PAGENUMBER =>' + str(index1))
     if response.status_code != 200:
@@ -43,12 +41,10 @@ for index1 in range(pageCount):
 
     if response.status_code == 200:
         json_data = response.json()
-        #print(json_data['organizational_url'])
-        #print(json_data['items'])
         json_items = json_data['items']
         print(json_data['total_count'])
         index = 0
-        for index in range(29):
+        for index in range(30):
             totalCount+=1
             print(str(totalCount) + ' -> ' + str(index))
             tempJsonItem = json_items[index]
