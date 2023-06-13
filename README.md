@@ -10,3 +10,7 @@ Main program that calls Github API with a Code Search query and exports a .csv o
 ## combine.py
 
 Short code to combine multiple .csv files of same headings into one .csv named 'concatenated.csv'
+
+## codeScraper.py
+
+Final program that takes 'concatenated.csv' and uses BeautifulSoup to access all the raw code URLs and exports data to 'finalTable.csv'
