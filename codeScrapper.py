@@ -1,9 +1,6 @@
 import pandas as pd
 from bs4 import BeautifulSoup
 import requests
-import sys
-import time
-import lxml
 
 df = pd.read_csv('processedURL-concat.csv')
 
